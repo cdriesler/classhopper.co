@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useCallback } from 'react'
-import { Viewer, ViewerEvent } from '@speckle/viewer'
+import { AssetType, Viewer, ViewerEvent } from '@speckle/viewer'
+import ObjectLoader from '@speckle/objectloader'
 import { Layer } from '../common'
 import { useViewRegistry } from '../common/hooks'
 import { useDispatch } from '@/store'
@@ -41,9 +42,12 @@ const SpeckleModelView = ({ stream, rootObjectId }: SpeckleModelViewProps): Reac
 
     const viewer = new Viewer(containerRef.current, {
       showStats: false,
-      environmentSrc: '',
       verbose: false,
-      keepGeometryData: true,
+      environmentSrc: {
+        id: '',
+        src: '',
+        type: AssetType.TEXTURE_HDR,
+      },
     })
 
     viewerRef.current = viewer
@@ -52,10 +56,10 @@ const SpeckleModelView = ({ stream, rootObjectId }: SpeckleModelViewProps): Reac
       viewerRef.current = viewer
     })
 
-    viewer.on(ViewerEvent.LoadProgress, (arg) => {
-      const { progress } = arg
-      safeSetModelLoadStatus(progress)
-    })
+    // viewer.on(ViewerEvent.LoadProgress, (arg) => {
+    //   const { progress } = arg
+    //   safeSetModelLoadStatus(progress)
+    // })
 
     return () => {
       viewer.dispose()
@@ -75,7 +79,13 @@ const SpeckleModelView = ({ stream, rootObjectId }: SpeckleModelViewProps): Reac
       state.lifecycle.model.status = 'loading'
     })
 
-    await viewer.loadObject(`${stream.url}/streams/${stream.id}/objects/${rootObjectId}`, stream.token)
+    const loader = new ObjectLoader({
+      serverUrl: stream.url,
+      streamId: stream.id,
+      objectId: rootObjectId,
+    })
+
+    await viewer.loadObject(loader, stream.token)
 
     let visibleObjectCount = 0
 
