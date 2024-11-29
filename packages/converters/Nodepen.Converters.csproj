@@ -12,8 +12,8 @@
 
   <ItemGroup>
     <!-- <PackageReference Include="Rhino.Inside" Version="7.0.0" /> -->
-    <PackageReference Include="Speckle.Objects" Version="2.20.5" />
-    <PackageReference Include="Speckle.Objects.Converter.Grasshopper7" Version="2.20.5" />
+    <PackageReference Include="Speckle.Objects" Version="2.21.0" />
+    <PackageReference Include="Speckle.Objects.Converter.Grasshopper7" Version="2.21.0" />
   </ItemGroup>
 
 </Project>
